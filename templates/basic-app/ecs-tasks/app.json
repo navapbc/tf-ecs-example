@@ -1,0 +1,26 @@
+[
+  {
+    "essential": true,
+    "image": "${docker_image_url}",
+    "memory": 2000,
+    "memoryReservation": 1500,
+    "name": "${container_name}",
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": 0
+      }
+    ],
+    "environment" : [
+      { "name": "AWS_REGION", "value": "${aws_region}" },
+      { "name": "PARAMETER_STORE_EXEC_PATH", "value": "${ssm_path}" }
+    ],
+    "healthCheck": {
+      "command": [ "CMD-SHELL", "${health_check}" ],
+      "retries": 3,
+      "timeout": 2,
+      "interval": 5,
+      "startPeriod": 5
+    }
+  }
+]
