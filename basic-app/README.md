@@ -13,4 +13,4 @@ npm run start
 
 ## Build and push a docker image
 
-See ../README.md
+See [README.md](README.md)

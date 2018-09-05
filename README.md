@@ -26,7 +26,7 @@ https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-install.ht
 ### The cluster
 To turn your ASG into an ECS cluster involves [creating the cluster](templates/vpc/main.tf) and [enabling](templates/vpc/iam.tf) some new IAM instance role permissions.
 
-In addition, EC2 instances need to be told what cluster they belong to. This is done on startup with [userdata](templates/vpc/user_data.tf)
+In addition, EC2 instances need to be told what cluster they belong to. This is done on startup with [userdata](templates/vpc/user_data.tpl)
 
 ## The ECS service
 It's a good practice to separate your underlying infrastructure from your service (separation of concerns). So, we have implemented the ECS service and task definition in a separate terraform configuration with its own terraform state.

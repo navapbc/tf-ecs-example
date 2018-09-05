@@ -8,7 +8,7 @@
 
 ## Setup required resources in AWS
 
-Before creating your VPC and your ECS service with terraform you will need to create a few resources. (Note: we use us-east-1 in our example configs; change as needed).
+Before creating your VPC and your ECS service with terraform you may need to create a few resources. (Note: we use us-east-1 in our example configs; change as needed).
 
 ### Terraform S3 bucket
 
@@ -30,7 +30,7 @@ aws ecr create-repository --repository-name ecs-example-app --region us-east-1
 
 ## Create your VPC
 
-The terraform configuration for your VPC can be found at: tf-deploy/myvpc/main.tf
+The terraform configuration for your VPC can be found at: [tf-deploy/myvpc/main.tf](../tf-deploy/myvpc/main.tf)
 
 Edit the "CHANGEME" values in that file
 
@@ -64,11 +64,11 @@ docker push $YOUR_IMAGE
 
 ## Set an AWS Parameter
 
-If you look in basic-app/Dockerfile, you see that we have launched the nodejs application with something called parameter-store-exec. This is what makes AWS Parameters available to the application.
+If you look in [basic-app/Dockerfile](../basic-app/Dockerfile), you see that we have launched the nodejs application with something called parameter-store-exec. This is what makes AWS Parameters available to the application.
 
-In templates/vpc/iam.tf, you can see that the cluster instances will have access to a parameter namespace, named after your vpc: e.g /ecs-example-vpc/*.
+In [templates/vpc/iam.tf](../templates/vpc/iam.tf), you can see that the cluster instances will have access to a parameter namespace, named after your vpc: e.g /ecs-example-vpc/*.
 
-And in templates/basic-app/ecs-tasks/app.json you can see that we set the env var PARAMETER_STORE_EXEC_PATH, which is what parameter-store-exec will use to load AWS parameters.
+And in [templates/basic-app/ecs-tasks/app.json](../templates/basic-app/ecs-tasks/app.json) you can see that we set the env var PARAMETER_STORE_EXEC_PATH, which is what parameter-store-exec will use to load AWS parameters.
 
 Set a parameter value using ecs-utils:
 ```
@@ -87,13 +87,13 @@ Set an encrypted value:
 param --region us-east-1 --kms-key-alias ecs-example put /ecs-example-vpc/basic-app/BAR foo123456
 ```
 
-This will be stored encrypted. templates/vpc/iam.tf rules allow the cluster instance access to the KMS key it is encrypted with.
+This will be encrypted. [templates/vpc/iam.tf](../templates/vpc/iam.tf) rules allow the cluster instance access to the KMS key it is encrypted with.
 
-You can find your parameters in the SSM console:
+You can browse your parameters in the SSM console:
 https://console.aws.amazon.com/systems-manager/parameters?region=us-east-1
 
 ## Create your Service
-The configuration for your ECS service is here: [tf-deploy/myapp/main.tf](tf-deploy/myapp/main.tf)
+The configuration for your ECS service is here: [tf-deploy/myapp/main.tf](../tf-deploy/myapp/main.tf)
 
 Use the same bucket you did for your vpc and also change the "target_group_arn" value you captured earlier.
 
@@ -105,12 +105,12 @@ terraform plan --var docker_image=$YOUR_IMAGE
 terraform apply --var docker_image=$YOUR_IMAGE
 ```
 
-apply should be very quick, but note that ECS is eventually consistent, you need to check that your app deployed using ecs-utils service-check
+apply should be very quick, but note that ECS is eventually consistent, you need to check that your app deployed in the console, or using ecs-utils service-check
 ```
 service-check --cluster-name ecs-example-vpc-cluster-a --region us-east-1 ecs-example-vpc-basic-app
 ```
 
-## Test the service
+## Test the service e2e
 
 If you used the default naming, you should see tasks running at:
 https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/ecs-example-vpc-cluster-a
@@ -133,7 +133,7 @@ FOO length is: 6
 BAR length is: 9
 ```
 
-This demonstrates that the application was able to access our environment variables (without exposing their values publicly!) This is obviously a very trivial application. You would more likely set things like a database hostname and password in a real application.
+This demonstrates that the application was able to access our environment variables (without exposing their values publicly!) This is obviously a very trivial application. A real application would want/need paramters like a database hostname and password.
 
 To review how all this works, the docker container is using the parameter-store-exec tool to pull AWS Parameter store params into the unix environment.
 https://github.com/navapbc/tf-ecs-example/blob/master/basic-app/Dockerfile#L21
@@ -149,7 +149,7 @@ If you are running your own EC2 instances you will need to update them from time
 
 https://aws.amazon.com/blogs/compute/how-to-automate-container-instance-draining-in-amazon-ecs/
 
-We've provided an alternative pattern. When you want to update your EC2 AMI (say to the latest ECS enabled image), you update the image_id in the launch configuration terraform [here](templates/vpc/main.tf). Once you deploy that, AWS does not actually update running instances. An orchestration must occur. ecs-utils provides that orchestration with the *rolling-replace* script. Try it:
+We've provided an alternative pattern. When you want to update your EC2 AMI (say to the latest ECS enabled image), you update the image_id in the launch configuration terraform in [templates/vpc/main.tf](../templates/vpc/main.tf). Once you deploy that, AWS does not actually update running instances. An orchestration must occur. ecs-utils provides that orchestration with the *rolling-replace* script. Try it:
 
 ```
 rolling-replace --cluster-name ecs-example-vpc-cluster-a --region us-east-1
