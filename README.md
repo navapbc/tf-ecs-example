@@ -7,7 +7,7 @@ AWS provides lots of documentation and useful tools for ECS clusters deployed wi
 
 If you currently have a service deployed with Terraform using an AWS Autoscaling group and Application Load Balancer, this repo should help you bridge the gap to using Docker to deploy your service.
 
-If you want to jump right into deploying the demo, feel free to jump ahead: it's [here](docs/demo.md)
+If you want to jump right into deploying the demo, feel free to jump ahead: it's [here](docs/demo.md) The useful python scripts are in a separate repo: [ecs-utils](https://github.com/navapbc/ecs-utils/blob/master/README.md)
 
 ## The ECS Cluster
 
@@ -42,10 +42,3 @@ We've provided a simple example app [here](basic-app/). The primary purpose of t
 ### On to the demo
 
 [docs/demo.md](docs/demo.md)
-
-
-
-
-
-
-
