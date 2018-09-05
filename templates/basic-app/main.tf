@@ -29,7 +29,7 @@ data "template_file" "task_definition" {
     docker_image_url = "${var.docker_image}"
     container_name   = "${local.app_name}"
     aws_region       = "${var.region}"
-    ssm_path         = "/${var.vpc_name}/${local.app_name}"
+    ssm_path         = "/${var.vpc_name}/${var.app_name}"
     container_port   = "${var.container_port}"
     health_check     = "${var.health_check}"
   }

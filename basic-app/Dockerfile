@@ -1,17 +1,21 @@
-FROM node:8
 
-# Create app directory
-WORKDIR /usr/src/app
+FROM node:8.9.4-alpine as packages
 
-# Install app dependencies
-COPY package*.json ./
+# Update packages on alpine
+RUN apk upgrade --update-cache
 
-RUN npm install
+# copy requirements
+WORKDIR /var/app
+COPY package*.json /var/app/
 
-# Bundle app source
-COPY . .
+# Install npm dependencies supressing the output
+RUN npm install --quiet
 
-EXPOSE 3000
+FROM node:8.9.4-alpine as development
+COPY . /var/app
+COPY --from=packages /var/app /var/app
+
+WORKDIR /var/app
 
 # run the app with parameter-store-exec
 RUN apk update && apk add ca-certificates wget &&  update-ca-certificates &&\
@@ -19,4 +23,4 @@ RUN apk update && apk add ca-certificates wget &&  update-ca-certificates &&\
   tar -xzpf parameter-store-exec-v1.0.0-linux-amd64.tar.gz && cp parameter-store-exec /
 ENTRYPOINT [ "/parameter-store-exec" ]
 
-CMD [ "npm", "start" ]
+CMD npm run start

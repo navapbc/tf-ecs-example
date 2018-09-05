@@ -1,10 +1,11 @@
-variable "asg_size" {
-  description = "number of instances in asg"
-  default     = "2"
-}
 
 variable "ec2_key_name" {
   description = "ssh key pair"
+}
+
+variable "bastion_cidr_blocks" {
+  description = "List of cidr IP's that can access the public bastion IP"
+  type        = "list"
 }
 
 variable "vpc_name" {
@@ -18,6 +19,11 @@ variable "alb_cidr_blocks" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "asg_size" {
+  description = "number of instances in asg"
+  default     = "2"
+}
+
 variable "azs" {
   description = "List of 3 AWS AZ's"
   type        = "list"
@@ -27,6 +33,12 @@ variable "azs" {
 variable "cidr" {
   description = "VPC cidr block"
   default     = "10.0.0.0/20"
+}
+
+variable "database_subnets" {
+  description = "Allocation of 3 subnets from your CIDR block for databases"
+  type        = "list"
+  default     = ["10.0.7.0/24", "10.0.8.0/24", "10.0.9.0/24"]
 }
 
 variable "private_subnets" {
@@ -39,12 +51,6 @@ variable "public_subnets" {
   description = "Allocation of 3 subnets from your CIDR block for the bastion and LB"
   type        = "list"
   default     = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-}
-
-variable "database_subnets" {
-  description = "Allocation of 3 subnets from your CIDR block for databases"
-  type        = "list"
-  default     = ["10.0.7.0/24", "10.0.8.0/24", "10.0.9.0/24"]
 }
 
 variable "region" {

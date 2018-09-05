@@ -4,24 +4,23 @@
 module "service" {
   source           = "../../templates/basic-app"
   desired_count    = "2"
-  #vpc_name         = "ecs-example-vpc"
+  vpc_name         = "ecs-example-vpc"
   region           = "us-east-1"
-  #target_group_arn = "arn:aws:elasticloadbalancing:us-east-1:123456:targetgroup/ecs-example-vpc-basic-app/123456"
-  #cluster          = "ecs-example-vpc-cluster-a"
+  #target_group_arn = "arn:aws:elasticloadbalancing:us-east-1:CHANGEME"
+  cluster          = "ecs-example-vpc-cluster-a"
   docker_image     = "${var.docker_image}"
   app_name         = "basic-app"
 }
 
 provider "aws" {
-  #region = "us-east-1"
+  region = "us-east-1"
 }
 
 terraform {
   backend "s3" {
-    #bucket         = "ecs-example-tfstate"
-    #key            = "ecs-example-vpc/terraform/basic-app/terraform.tfstate"
-    #region         = "us-east-1"
-    #dynamodb_table = "ecs-example-tflock"
+    bucket         = "nava-mps2-tfstate"
+    key            = "ecs-example-vpc/terraform/basic-app/terraform.tfstate"
+    region         = "us-east-1"
   }
 
   required_version = "~> 0.11.7"

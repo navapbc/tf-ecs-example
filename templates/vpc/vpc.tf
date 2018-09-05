@@ -69,7 +69,7 @@ resource "aws_instance" "bastion" {
   instance_type          = "t2.micro"
   subnet_id              = "${local.bastion_subnet_id}"
   key_name               = "${var.ec2_key_name}"
-  # vpc_security_group_ids = ["1.2.3.4/32"]
+  vpc_security_group_ids = ["${aws_security_group.bastion_sg.id}"]
 
   tags {
     Name = "${var.vpc_name}-bastion"
