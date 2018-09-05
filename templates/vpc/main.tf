@@ -77,7 +77,7 @@ resource "aws_launch_configuration" "service" {
 
   # this is the official aws provided ami for ecs
   # taken from https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html
-  image_id = "ami-00129b193dc81bc31"
+  image_id = "ami-00129b193dc81bc31" # assumes us-east-1
 
   instance_type = "t2.small"
   key_name      = "${var.ec2_key_name}"

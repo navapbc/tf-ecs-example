@@ -11,7 +11,7 @@ If you want to jump right into deploying the demo, feel free to jump ahead: it's
 
 ## The ECS Cluster
 
-Let's assume you already run EC2 instances in Autoscaling groups with a load balancer. Let's review the components needed to be running an ECS cluster.
+Let's assume you already run EC2 instances in Autoscaling groups with a load balancer. Let's review the components you need to transform that into an ECS cluster.
 
 ### ECS Agent/AMI
 
@@ -24,12 +24,13 @@ Otherwise you need to provide a OS-compatible AMI that has had the ECS agent ins
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-install.html
 
 ### The cluster
-To turn your ASG into an ECS cluster involves [creating the cluster](templates/vpc/main.tf) and [enabling](templates/vpc/iam.tf) some new IAM instance role permissions.
-
-In addition, EC2 instances need to be told what cluster they belong to. This is done on startup with [userdata](templates/vpc/user_data.tpl)
+To turn your ASG into an ECS cluster involves:
+- [creating the cluster](templates/vpc/main.tf)
+- [enabling](templates/vpc/iam.tf) some new IAM instance role permissions.
+- EC2 instances need to be told what cluster they belong to. This is done at startup through a simple [userdata](templates/vpc/user_data.tpl) addition.
 
 ## The ECS service
-It's a good practice to separate your underlying infrastructure from your service (separation of concerns). So, we have implemented the ECS service and task definition in a separate terraform configuration with its own terraform state.
+It's a good practice to separate your underlying infrastructure from your service (separation of concerns). So we have implemented the ECS service and task definition in a separate terraform configuration with its own terraform state.
 
 ### Service Terraform
 
@@ -39,6 +40,6 @@ The terraform template for our service is [here](templates/basic-app). In the de
 
 We've provided a simple example app [here](basic-app/). The primary purpose of the application is to showcase the use of AWS Parameter store. Being able to provide your running application with config parameters and secrets is an essential pattern that we cover in the demo.
 
-### On to the demo
+### The demo
 
-[docs/demo.md](docs/demo.md)
+Create a fully functional ECS cluster and service: [docs/demo.md](docs/demo.md)
