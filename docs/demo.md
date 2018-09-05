@@ -8,11 +8,11 @@
 
 ## Setup required resources in AWS
 
-Before creating your VPC and your ECS service with terraform you may need to create a few resources. (Note: we use us-east-1 in our example configs; change as needed).
+Before creating your VPC and your ECS service with terraform you may need to create a few resources. Note: we use us-east-1 for this demo. If you need to use a different region, you will need to find references to us-east-1 in the templates/ and tf-deploy/ and change them. One tricky us-east-1 requirement is the ECS AMI ID in templates/vpc/main.tf.
 
 ### Terraform S3 bucket
 
-Optional; you can also use an existing bucket, used later as an root location for tf state.
+Optional; this will be used as the root location for tf state.
 ```
 aws s3api create-bucket --bucket YOUR_BUCKET_NAME --region us-east-1
 ```
@@ -55,8 +55,9 @@ aws ecr get-login --no-include-email --region us-east-1
 Build basic-app:
 ```
 cd basic-app/
-# build and tag (change the repo path based on what you created earlier)
+# the tagged image url should be based on the repo url you created previously
 YOUR_IMAGE=CHANGEME.dkr.ecr.us-east-1.amazonaws.com/ecs-example-app:latest
+# build and tag (change the repo path based on what you created earlier)
 docker build -t $YOUR_IMAGE .
 # push
 docker push $YOUR_IMAGE
@@ -70,14 +71,14 @@ In [templates/vpc/iam.tf](../templates/vpc/iam.tf), you can see that the cluster
 
 And in [templates/basic-app/ecs-tasks/app.json](../templates/basic-app/ecs-tasks/app.json) you can see that we set the env var PARAMETER_STORE_EXEC_PATH, which is what parameter-store-exec will use to load AWS parameters.
 
-Set a parameter value using ecs-utils:
+Set a parameter value using ecs-utils **param** script:
 ```
 param --region us-east-1 put /ecs-example-vpc/basic-app/FOO foo123
 ```
 
 Let's demonstrate setting an encrypted value as well (using ecs-utils)
 
-Create a key:
+Create a key with ecs-utils **kms-create** script:
 ```
 kms-create --region us-east-1 --alias ecs-example
 ```
@@ -97,6 +98,7 @@ The configuration for your ECS service is here: [tf-deploy/myapp/main.tf](../tf-
 
 Use the same bucket you did for your vpc and also change the "target_group_arn" value you captured earlier.
 
+Deploy using the tagged image URL you set earlier:
 
 ```
 cd tf-deploy/myapp
@@ -105,7 +107,7 @@ terraform plan --var docker_image=$YOUR_IMAGE
 terraform apply --var docker_image=$YOUR_IMAGE
 ```
 
-apply should be very quick, but note that ECS is eventually consistent, you need to check that your app deployed in the console, or using ecs-utils service-check
+terraform apply should be very quick: ECS is eventually consistent: you need to check that your app deployed in the AWS ECS console, or using the handy ecs-utils **service-check**
 ```
 service-check --cluster-name ecs-example-vpc-cluster-a --region us-east-1 ecs-example-vpc-basic-app
 ```
@@ -149,7 +151,7 @@ If you are running your own EC2 instances you will need to update them from time
 
 https://aws.amazon.com/blogs/compute/how-to-automate-container-instance-draining-in-amazon-ecs/
 
-We've provided an alternative pattern. When you want to update your EC2 AMI (say to the latest ECS enabled image), you update the image_id in the launch configuration terraform in [templates/vpc/main.tf](../templates/vpc/main.tf). Once you deploy that, AWS does not actually update running instances. An orchestration must occur. ecs-utils provides that orchestration with the *rolling-replace* script. Try it:
+We've provided an alternative pattern. When you want to update your EC2 AMI (say to the latest ECS enabled image), you update the image_id in the launch configuration terraform in [templates/vpc/main.tf](../templates/vpc/main.tf). Once you deploy that, AWS does not actually update running instances. An orchestration must occur. ecs-utils provides that orchestration with the **rolling-replace** script. Try it:
 
 ```
 rolling-replace --cluster-name ecs-example-vpc-cluster-a --region us-east-1
