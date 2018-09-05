@@ -14,7 +14,7 @@ Before creating your VPC and your ECS service with terraform you will need to cr
 
 Optional; you can also use an existing bucket, used later as an root location for tf state.
 ```
-aws s3api create-bucket --bucket $S3_BUCKET --region us-east-1
+aws s3api create-bucket --bucket YOUR_BUCKET_NAME --region us-east-1
 ```
 
 ### AWS EC2 instance key pair
@@ -93,7 +93,7 @@ You can find your parameters in the SSM console:
 https://console.aws.amazon.com/systems-manager/parameters?region=us-east-1
 
 ## Create your Service
-The configuration for your ECS service is at: tf-deploy/myapp/main.tf
+The configuration for your ECS service is here: [tf-deploy/myapp/main.tf](tf-deploy/myapp/main.tf)
 
 Use the same bucket you did for your vpc and also change the "target_group_arn" value you captured earlier.
 
@@ -103,6 +103,11 @@ cd tf-deploy/myapp
 terraform init # checks that everything is in order
 terraform plan --var docker_image=$YOUR_IMAGE
 terraform apply --var docker_image=$YOUR_IMAGE
+```
+
+apply should be very quick, but note that ECS is eventually consistent, you need to check that your app deployed using ecs-utils service-check
+```
+service-check --cluster-name ecs-example-vpc-cluster-a --region us-east-1 ecs-example-vpc-basic-app
 ```
 
 ## Test the service
@@ -137,3 +142,19 @@ The AWS Parameter store path it uses is defined here:
 https://github.com/navapbc/tf-ecs-example/blob/master/templates/basic-app/ecs-tasks/app.json#L16
 
 You can see where the nodejs code is accessing the unix environment here: https://github.com/navapbc/tf-ecs-example/blob/master/basic-app/server.js#L19
+
+## Bonus: rolling EC2 instance update
+
+If you are running your own EC2 instances you will need to update them from time to time. AWS provides a pattern for updating your ECS cluster without downtime geared toward a Cloudformation environment:
+
+https://aws.amazon.com/blogs/compute/how-to-automate-container-instance-draining-in-amazon-ecs/
+
+We've provided an alternative pattern. When you want to update your EC2 AMI (say to the latest ECS enabled image), you update the image_id in the launch configuration terraform [here](templates/vpc/main.tf). Once you deploy that, AWS does not actually update running instances. An orchestration must occur. ecs-utils provides that orchestration with the *rolling-replace* script. Try it:
+
+```
+rolling-replace --cluster-name ecs-example-vpc-cluster-a --region us-east-1
+```
+
+Note: the above invocation does a rolling replacement of instances in the ASG. If you had actually updated the AMI, you would want to include the flag --ami-id so the script can check whether the instance has already been updated.
+
+rolling-replace and all the other ecs-utils scripts are documented in detail here: https://github.com/navapbc/ecs-utils/blob/master/README.md
