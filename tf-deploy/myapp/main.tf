@@ -18,7 +18,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket         = "nava-mps2-tfstate"
+    #bucket         = "CHANGEME"
     key            = "ecs-example-vpc/terraform/basic-app/terraform.tfstate"
     region         = "us-east-1"
   }
