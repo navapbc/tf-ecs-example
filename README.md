@@ -131,4 +131,12 @@ FOO length is: 6
 BAR length is: 9
 ```
 
-This demonstrates that the application was able to access our environment variables (without exposing their values publicly!)
+This demonstrates that the application was able to access our environment variables (without exposing their values publicly!) This is obviously a very trivial application. You would more likely set things like a database hostname and password in a real application.
+
+To review how all this works, the docker container is using the parameter-store-exec tool to pull AWS Parameter store params into the unix environment.
+https://github.com/navapbc/tf-ecs-example/blob/master/basic-app/Dockerfile#L21
+
+The AWS Parameter store path it uses is defined here:
+https://github.com/navapbc/tf-ecs-example/blob/master/templates/basic-app/ecs-tasks/app.json#L16
+
+You can see where the nodejs code is accessing the unix environment here: https://github.com/navapbc/tf-ecs-example/blob/master/basic-app/server.js#L19
