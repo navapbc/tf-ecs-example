@@ -11,7 +11,7 @@ If you want to jump right into deploying the demo, feel free to jump ahead: it's
 
 ## The ECS Cluster
 
-Let's assume you already run EC2 instances in Autoscaling groups with a load balancer. Let's review the components you need to transform that into an ECS cluster.
+A typical AWS service would consist of networking (a VPC), an Autoscaling group of EC2 instances and a load balancer. Let's review the components you need to transform that into an ECS cluster.
 
 ### ECS Agent/AMI
 
