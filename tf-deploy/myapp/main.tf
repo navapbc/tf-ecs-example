@@ -3,7 +3,7 @@
 
 module "service" {
   source           = "../../templates/basic-app"
-  desired_count    = "2"
+  desired_count    = "4"
   vpc_name         = "ecs-example-vpc"
   region           = "us-east-1"
   #target_group_arn = "arn:aws:elasticloadbalancing:us-east-1:CHANGEME"

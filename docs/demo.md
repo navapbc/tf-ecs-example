@@ -145,6 +145,10 @@ https://github.com/navapbc/tf-ecs-example/blob/master/templates/basic-app/ecs-ta
 
 You can see where the nodejs code is accessing the unix environment here: https://github.com/navapbc/tf-ecs-example/blob/master/basic-app/server.js#L19
 
+Note: parameter-store-exec acquires the parameters once, at startup. Parameter changes will require a restart of docker containers.
+
+Parameter and KMS permissions can/should be locked down further. Here is a great reference: https://aws.amazon.com/blogs/mt/the-right-way-to-store-secrets-using-parameter-store/
+
 ## Bonus: rolling EC2 instance update
 
 If you are running your own EC2 instances you will need to update them from time to time. AWS provides a pattern for updating your ECS cluster without downtime geared toward a Cloudformation environment:
@@ -160,3 +164,4 @@ rolling-replace --cluster-name ecs-example-vpc-cluster-a --region us-east-1
 Note: the above invocation does a rolling replacement of instances in the ASG. If you had actually updated the AMI, you would want to include the flag --ami-id so the script can check whether the instance has already been updated.
 
 rolling-replace and all the other ecs-utils scripts are documented in detail here: https://github.com/navapbc/ecs-utils/blob/master/README.md
+

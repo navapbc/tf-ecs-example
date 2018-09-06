@@ -2,8 +2,8 @@
   {
     "essential": true,
     "image": "${docker_image_url}",
-    "memory": 2000,
-    "memoryReservation": 1500,
+    "memory": 1000,
+    "memoryReservation": 750,
     "name": "${container_name}",
     "portMappings": [
       {

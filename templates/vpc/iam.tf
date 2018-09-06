@@ -23,13 +23,21 @@ EOF
 
 data "template_file" "app_server_policy" {
   # Allow logs for cloudwatch
-  # Allow ecs & ecr access as per https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
-  # and https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
+  # Allow ecs & ecr access as per 
+  # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
+  #
   # Allow ec2 describe instances so that the instance can see its own metadata if needed
+  #
+  # Allow param store access only to the namespace of this VPC
+  # You can/should create even more granular param access depending
+  # on the additional services you run in this cluster.
   # 
-  # Allow containers to access the AWS SSM params scoped to this VPC
+  # Please read:
   # https://aws.amazon.com/blogs/mt/the-right-way-to-store-secrets-using-parameter-store/
-  # TODO: kms access should be limited to the KMS key used for this VPC's parameter
+  # for additional steps you can take to impart least permissions with ECS.
+  #
+  # Note: Once you have created a KMS key for this ECS service,
+  # kms access should be limited to that KMS key.
   template = <<EOF
 {
   "Version": "2012-10-17",
@@ -37,32 +45,26 @@ data "template_file" "app_server_policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "logs:DescribeLogStreams"
-      ],
-        "Resource": [
-          "arn:aws:logs:*:*:*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:Describe",
-        "ec2:DescribeInstances",
-        "ecs:CreateCluster",
         "ecs:DeregisterContainerInstance",
         "ecs:DiscoverPollEndpoint",
         "ecs:Poll",
-        "ecs:StartTask",
         "ecs:RegisterContainerInstance",
         "ecs:StartTelemetrySession",
         "ecs:Submit*",
         "ecr:GetAuthorizationToken",
         "ecr:BatchCheckLayerAvailability",
         "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage"
+        "ecr:BatchGetImage",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:Describe",
+        "ec2:DescribeInstances"
       ],
       "Resource": [
         "*"
@@ -89,7 +91,7 @@ data "template_file" "app_server_policy" {
          "kms:Decrypt"
       ],
       "Resource": "*"
-}
+    }
   ]
 }
 EOF
