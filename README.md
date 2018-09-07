@@ -3,7 +3,7 @@ An example implementation of an AWS ECS cluster managed with Terraform.
 
 ## Introduction
 
-AWS provides documentation and useful tools for ECS clusters deployed with Cloudformation. This repo lays out some patterns, examples and tools for implementing an ECS cluster using Terraform (for this demo we are not using Fargate but, rather, are running our own EC2 instances).
+AWS provides documentation and useful tools for ECS clusters deployed with Cloudformation. This repo lays out some patterns, examples and tools for implementing an ECS cluster using Terraform (for this demo we are running our own EC2 instances, rather than using Fargate).
 
 If you currently have a service deployed with Terraform using an AWS Autoscaling group and Application Load Balancer, this repo should help you bridge the gap to using Docker to deploy your service. The demo encapsulates some good practices for maintaining infrastructure: representing infrastructure as code, automation, rapid deployment and security. More details below.
 
@@ -11,7 +11,7 @@ If you want to get right into deploying the demo, feel free to jump ahead: it's 
 
 ## The Infrastructure
 
-![ecs](https://s3.amazonaws.com/nava-public-static/ecsdemo/ecs.png)
+![ecs](https://s3.amazonaws.com/nava-public-static/ecsdemo/ecs.png =500x)
 
 The above image represents the basic components of the demo system (In a real  system you might have a database or additional services). One thing that stands out is the separation of the ECS service (the part which runs your application container) and the underlying infrastructure. The idea here is that we want to maintain all of our resources with checked in terraform configuration but that the maintenance of the service (e.g. updating a docker image) is something that is likely to happen at a different cadence and perhaps even by a different team. So, we separate these concerns to avoid having conflicting changes and to make clear the logical separation. 
 
