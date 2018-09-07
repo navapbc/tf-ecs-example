@@ -155,7 +155,7 @@ In this architecture we are running our own EC2 instances. They will need to upd
 
 https://aws.amazon.com/blogs/compute/how-to-automate-container-instance-draining-in-amazon-ecs/
 
-We've provided an alternative pattern. When you want to update your EC2 AMI, you edit the image_id in the launch configuration terraform in [templates/vpc/main.tf](../templates/vpc/main.tf). Once you deploy that, AWS does not actually update running instances. An orchestration must occur. ecs-utils provides that orchestration with the **rolling-replace** script. Try it:
+We've provided an alternative pattern. When you want to update your EC2 AMI, you edit the ami_id in: [templates/vpc/variables.tf](../templates/vpc/variables.tf). Once you deploy that, AWS does not actually update running instances. An orchestration must occur. ecs-utils provides that orchestration with the **rolling-replace** script. Try it:
 
 ```
 rolling-replace --cluster-name ecs-example-vpc-cluster-a --region us-east-1

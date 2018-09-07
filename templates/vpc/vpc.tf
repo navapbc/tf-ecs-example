@@ -56,7 +56,7 @@ resource "aws_security_group" "bastion_sg" {
   }
 }
 
-# TODO: to enable access using ssh-agent forwarding, add this to bastion
+# to enable access using ssh-agent forwarding, add this to bastion
 # userdata:
 # sed -i 's/AllowAgentForwarding.*/AllowAgentForwarding yes/' /etc/ssh/sshd_config
 # service sshd restart

@@ -24,6 +24,16 @@ variable "asg_size" {
   default     = "2"
 }
 
+# this is the official aws ami for ecs:
+# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html
+variable "ami_id" {
+  default = "ami-00129b193dc81bc31"
+}
+
+variable "app_instance_size" {
+  default = "t2.small"
+}
+
 variable "azs" {
   description = "List of 3 AWS AZ's"
   type        = "list"

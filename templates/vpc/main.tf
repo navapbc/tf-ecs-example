@@ -75,11 +75,9 @@ resource "aws_launch_configuration" "service" {
   enable_monitoring    = false
   iam_instance_profile = "${aws_iam_instance_profile.generic_app_profile.id}"
 
-  # this is the official aws provided ami for ecs
-  # taken from https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html
-  image_id = "ami-00129b193dc81bc31" # assumes us-east-1
+  image_id = "${var.ami_id}"
 
-  instance_type = "t2.small"
+  instance_type = "${var.app_instance_size}"
   key_name      = "${var.ec2_key_name}"
   name_prefix   = "${var.vpc_name}-lc-a"
 

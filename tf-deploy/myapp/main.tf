@@ -16,6 +16,8 @@ provider "aws" {
   region = "us-east-1"
 }
 
+// Note: as a best practice, we recommend using dynamodb for state locking but
+// for simplicity we skip that here.
 terraform {
   backend "s3" {
     #bucket         = "CHANGEME"
