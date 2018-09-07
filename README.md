@@ -11,7 +11,7 @@ If you want to get right into deploying the demo, feel free to jump ahead: it's 
 
 ## The Infrastructure
 
-![ecs](https://s3.amazonaws.com/nava-public-static/ecsdemo/ecs.png =500x)
+<img src="https://s3.amazonaws.com/nava-public-static/ecsdemo/ecs.png" width="500px">
 
 The above image represents the basic components of the demo system (In a real  system you might have a database or additional services). One thing that stands out is the separation of the ECS service (the part which runs your application container) and the underlying infrastructure. The idea here is that we want to maintain all of our resources with checked in terraform configuration but that the maintenance of the service (e.g. updating a docker image) is something that is likely to happen at a different cadence and perhaps even by a different team. So, we separate these concerns to avoid having conflicting changes and to make clear the logical separation. 
 
