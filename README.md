@@ -21,7 +21,7 @@ The above image represents the basic components of the demo system (In a real  s
 
 A typical AWS service would consist of networking (a VPC), an Autoscaling group of EC2 instances and a load balancer. The demo uses terraform to represent [all those details](templates/vpc). **This demo uses a terraform template for the VPC.** This allows you to create multiple "copies" of your infrastructure (e.g. a "staging" and a "production" VPC) This allows you to test changes in a non-production environment before rolling them out to real users. Using a template like this ensures that the environments are the same in every way (with a few exceptions like resource names).
 
-Let's review the components you need to transform that into an ECS cluster.
+Let's review the components that are specific to using ECS...
 
 ### ECS Agent/AMI
 
