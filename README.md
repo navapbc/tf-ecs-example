@@ -1,5 +1,5 @@
 # tf-ecs-example
-An example implementation of an (AWS ECS)[https://aws.amazon.com/ecs/] cluster managed with (Terraform)[https://www.terraform.io/intro/index.html].
+An example implementation of an [AWS ECS](https://aws.amazon.com/ecs/) cluster managed with [Terraform](https://www.terraform.io/intro/index.html).
 
 ## Introduction
 
