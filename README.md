@@ -7,13 +7,13 @@ AWS provides documentation and useful tools for ECS clusters deployed with Cloud
 
 If you currently have a service deployed with Terraform using an AWS Autoscaling group and Application Load Balancer, this repo should help you bridge the gap to using Docker to deploy your service. The demo encapsulates some good practices for maintaining infrastructure: representing infrastructure as code, automation, rapid deployment and security. More details below.
 
-If you want to get right into deploying the demo, feel free to jump ahead: it's [here](docs/demo.md) The useful python scripts are in a separate repo: [ecs-utils](https://github.com/navapbc/ecs-utils/blob/master/README.md)
+If you want to get right into deploying the demo, feel free to jump ahead: it's [here](docs/demo.md) Or you might be intereseted in the python scripts we created: [ecs-utils](https://github.com/navapbc/ecs-utils/blob/master/README.md)
+
+Just note that we explain some of the reasoning behind the demo architecture below...
 
 ## The Architecture
 
-<div style="text-align:center">
 <img src="https://s3.amazonaws.com/nava-public-static/ecsdemo/ecs.png" width="400px">
-</div>
 
 The above image represents the basic components of the demo system (In a real  system you might have a database or additional services). One thing that stands out is the separation of the ECS service (the part which runs your application container) and the underlying infrastructure. The idea here is that we want to maintain all of our resources with checked in terraform configuration but that the maintenance of the service (e.g. updating a docker image) is something that is likely to happen at a different cadence and perhaps even by a different team. So, we separate these concerns to avoid having conflicting changes and to make clear the logical separation. 
 
