@@ -9,13 +9,19 @@ If you currently have a service deployed with Terraform using an AWS Autoscaling
 
 If you want to get right into deploying the demo, feel free to jump ahead: it's [here](docs/demo.md) The useful python scripts are in a separate repo: [ecs-utils](https://github.com/navapbc/ecs-utils/blob/master/README.md)
 
-## The Infrastructure
+## The Architecture
 
-<img src="https://s3.amazonaws.com/nava-public-static/ecsdemo/ecs.png" width="500px">
+<div style="text-align:center">
+<img src="https://s3.amazonaws.com/nava-public-static/ecsdemo/ecs.png" width="400px">
+</div>
 
 The above image represents the basic components of the demo system (In a real  system you might have a database or additional services). One thing that stands out is the separation of the ECS service (the part which runs your application container) and the underlying infrastructure. The idea here is that we want to maintain all of our resources with checked in terraform configuration but that the maintenance of the service (e.g. updating a docker image) is something that is likely to happen at a different cadence and perhaps even by a different team. So, we separate these concerns to avoid having conflicting changes and to make clear the logical separation. 
 
-A typical AWS service would consist of networking (a VPC), an Autoscaling group of EC2 instances and a load balancer. The demo uses terraform to represent [all those details](templates/vpc). Let's review the components you need to transform that into an ECS cluster.
+## The VPC
+
+A typical AWS service would consist of networking (a VPC), an Autoscaling group of EC2 instances and a load balancer. The demo uses terraform to represent [all those details](templates/vpc). **This demo uses a terraform template for the VPC.** This allows you to create multiple "copies" of your infrastructure (e.g. a "staging" and a "production" VPC) This allows you to test changes in a non-production environment before rolling them out to real users. Using a template like this ensures that the environments are the same in every way (with a few exceptions like resource names).
+
+Let's review the components you need to transform that into an ECS cluster.
 
 ### ECS Agent/AMI
 
@@ -38,11 +44,15 @@ It's a good practice to separate your underlying infrastructure from your servic
 
 ### Service Terraform
 
-The terraform template for our service is [here](templates/basic-app). In the demo, you will be deploying from a config file using that template. The service takes the target group arn and cluster name as input. This is how AWS knows where your containers should run and which load balancer they should attach to.
+The terraform template for our service is [here](templates/basic-app). In the demo, you will be deploying from a config file using that template. The service takes the target group arn and cluster name as input. This is how AWS knows where your containers should run and which load balancer they should attach to. Again, the template allows you to create multiple "copies" of the service (e.g. one for the "staging" vpc and another for "production").
 
 ### Example Docker App
 
 We've provided a simple example app [here](basic-app/). The primary purpose of the application is to showcase the use of AWS Parameter store. Being able to provide your running application with config parameters and secrets is an essential pattern that we cover in the demo.
+
+## Application config
+
+We've provided a pattern in the demo for providing key configuration parameters via AWS Parameter Store. This is an essential need for providing secrets (e.g. database passwords) to the application runtime. The basic pattern involves providing the values in the unix environment of the docker container which is from the [Twelve-Factor App pattern](https://12factor.net/config). Though secrets should not be checked in to the repo, we've found that non-secret configuration elements (e.g. upstream urls or feature flags) are often best maintained in code. We did not demonstrate that in the demo. You could certainly push all of your configuration values into the parameter store but one could also, for example, include configuration parameters in the terraform [service configuration](templates/basic-app/ecs-tasks/app.json) as well.
 
 ### The demo
 
